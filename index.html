@@ -7,19 +7,19 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#0c2430;
-    --teal:#14586b;
-    --teal-2:#1f7287;
-    --paper:#eef1f0;
+    --ink:#3d2f2f;
+    --teal:#8b5a5a;
+    --teal-2:#a86b6b;
+    --paper:#f9f5f3;
     --card:#ffffff;
-    --line:#d6dedd;
-    --copper:#c25f34;
-    --copper-lt:#e89b6b;
-    --muted:#5c6f74;
-    --display:'Bricolage Grotesque',Georgia,serif;
+    --line:#e8ddd9;
+    --copper:#d4a574;
+    --copper-lt:#e6c49e;
+    --muted:#7d5c5c;
+    --display:'Playfair Display',Georgia,serif;
     --body:'Inter',system-ui,-apple-system,sans-serif;
     --mono:'Space Mono','SFMono-Regular',Menlo,monospace;
   }
@@ -41,7 +41,7 @@
   /* HERO */
   .hero{
     position:relative;overflow:hidden;color:var(--paper);
-    background:linear-gradient(160deg,#0a212c 0%,var(--teal) 70%,var(--teal-2) 100%);
+    background:linear-gradient(160deg,#4a3535 0%,#8b5a5a 70%,#a86b6b 100%);
     padding:78px 0 0;
   }
   .hero .eyebrow{color:var(--copper-lt)}
@@ -59,7 +59,7 @@
     background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);
     border-radius:14px;padding:22px 24px;margin:6px 0 4px;backdrop-filter:blur(2px);
   }
-  .note p{margin:0;color:#e7eef0;font-size:1.02rem}
+  .note p{margin:0;color:#f0e5e0;font-size:1.02rem}
   .note .sig{font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;color:var(--copper-lt);margin-top:12px}
 
   /* sections */
@@ -81,7 +81,7 @@
   .hotel .price{font-family:var(--display);font-weight:800;font-size:1.7rem}
   .hotel .price span{font-family:var(--body);font-weight:500;font-size:.85rem;color:var(--muted)}
   .pill{display:inline-block;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
-    background:#fcefe7;color:var(--copper);border:1px solid #f0d5c5;border-radius:999px;padding:5px 11px;margin-top:16px}
+    background:#ede8e3;color:var(--copper);border:1px solid #ddd0c8;border-radius:999px;padding:5px 11px;margin-top:16px}
 
   /* days / timeline */
   .day{margin-bottom:46px}
@@ -95,8 +95,8 @@
   .time{font-family:var(--mono);font-size:.9rem;color:var(--copper);padding-top:1px}
   .stop-body strong{display:block;font-weight:600}
   .stop-body small{color:var(--muted);font-size:.92rem}
-  .aside{background:#e6ecec;border-left:3px solid var(--teal-2);border-radius:0 10px 10px 0;
-    padding:13px 17px;margin-top:14px;font-size:.95rem;color:#33474c}
+  .aside{background:#f0e5e0;border-left:3px solid var(--teal-2);border-radius:0 10px 10px 0;
+    padding:13px 17px;margin-top:14px;font-size:.95rem;color:#5d3d3d}
 
   /* map */
   #map{height:460px;width:100%;border-radius:16px;border:1px solid var(--line);z-index:0}
@@ -116,7 +116,7 @@
   td{padding:11px 22px;border-bottom:1px solid var(--line);font-size:.97rem}
   td:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
   tr:last-child td{border-bottom:none}
-  .subtotal td{background:#f6f8f8;font-weight:600}
+  .subtotal td{background:#f5f0ed;font-weight:600}
   .total td{background:var(--ink);color:var(--paper);font-family:var(--display);font-weight:800;font-size:1.15rem}
   .budget-note{color:var(--muted);font-size:.9rem;margin:16px 2px 0}
   .budget-note .star{color:var(--copper)}
