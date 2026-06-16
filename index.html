@@ -139,6 +139,9 @@
     cursor:pointer;transition:background .2s}
   .dot-btn.active{background:#fff}
 
+  /* personal photos */
+  .us-photo{width:100%;border-radius:16px;border:1px solid var(--line);display:block;object-fit:cover;max-height:420px;margin:12px 0}
+
   /* highlights */
   .hl{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   .hl div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
@@ -196,11 +199,10 @@
     </div>
     <div class="carousel-wrap">
       <div class="carousel" id="carousel">
-        <div class="carousel-slide"><img src="photos/Screenshot 2026-06-17 at 00.14.56.png" alt="Wij - samen"></div>
-        <div class="carousel-slide"><img src="photos/Screenshot 2026-06-17 at 00.15.39.png" alt="Wij - moment"></div>
-        <div class="carousel-slide"><img src="photos/Screenshot 2026-06-17 at 00.15.50.png" alt="Wij - gezellig"></div>
-        <div class="carousel-slide"><img src="photos/Screenshot 2026-06-17 at 00.17.42.png" alt="Wij - samen"></div>
-        <div class="carousel-slide"><img src="photos/Screenshot 2026-06-17 at 00.17.52.png" alt="Wij - moment"></div>
+        <div class="carousel-slide"><img src="photos/hotel-1.png" alt="Haven Hotel Rotterdam"></div>
+        <div class="carousel-slide"><img src="photos/hotel-2.png" alt="Haven Hotel Rotterdam - kamer"></div>
+        <div class="carousel-slide"><img src="photos/hotel-3.png" alt="Haven Hotel Rotterdam - uitzicht"></div>
+        <div class="carousel-slide"><img src="photos/hotel-4.png" alt="Haven Hotel Rotterdam - spa"></div>
       </div>
       <button class="carousel-nav prev" onclick="moveCarousel(-1)">❮</button>
       <button class="carousel-nav next" onclick="moveCarousel(1)">❯</button>
@@ -209,7 +211,6 @@
         <button class="dot-btn" onclick="goToSlide(1)"></button>
         <button class="dot-btn" onclick="goToSlide(2)"></button>
         <button class="dot-btn" onclick="goToSlide(3)"></button>
-        <button class="dot-btn" onclick="goToSlide(4)"></button>
       </div>
     </div>
     <div class="hotel">
@@ -229,6 +230,8 @@
       </p>
     </div>
   </section>
+
+  <img class="us-photo" src="photos/Screenshot 2026-06-17 at 00.14.56.png" alt="Wij samen">
 
   <section id="dagen">
     <div class="section-head">
@@ -251,6 +254,8 @@
       <div class="aside">Liever rustig beginnen? Dan komen we gewoon later aan, checken vroeg in en houden de avond luizig. Helemaal aan ons.</div>
     </div>
 
+    <img class="us-photo" src="photos/Screenshot 2026-06-17 at 00.15.39.png" alt="Wij samen">
+
     <div class="day">
       <div class="day-head"><span class="n">Dag 2</span><h3>Zaterdag — kunst, water en ontspanning</h3></div>
       <ul class="timeline">
@@ -265,6 +270,8 @@
       </ul>
       <div class="aside">Dit is de volste dag. We houden minstens één onderdeel optioneel — het laatste museum of het kattencafé laten we vallen als we liever even niets doen.</div>
     </div>
+
+    <img class="us-photo" src="photos/Screenshot 2026-06-17 at 00.15.50.png" alt="Wij samen">
 
     <div class="day">
       <div class="day-head"><span class="n">Dag 3</span><h3>Zondag — rustig afsluiten</h3></div>
@@ -322,6 +329,8 @@
 
   </section>
 
+  <img class="us-photo" src="photos/Screenshot 2026-06-17 at 00.17.42.png" alt="Wij samen">
+
   <section id="waarom">
     <div class="section-head">
       <p class="eyebrow">Waarom ik dit voor ons in gedachten heb</p>
@@ -334,6 +343,8 @@
       <div><b>Kunst &amp; architectuur</b><small>Genoeg moois om te zien, maar steeds met ruimte om af te wijken.</small></div>
     </div>
   </section>
+
+  <img class="us-photo" src="photos/Screenshot 2026-06-17 at 00.17.52.png" alt="Wij samen">
 
   <section id="regelen">
     <div class="section-head">
