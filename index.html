@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekendje Rotterdam</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c2430;
+    --teal:#14586b;
+    --teal-2:#1f7287;
+    --paper:#eef1f0;
+    --card:#ffffff;
+    --line:#d6dedd;
+    --copper:#c25f34;
+    --copper-lt:#e89b6b;
+    --muted:#5c6f74;
+    --display:'Bricolage Grotesque',Georgia,serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'Space Mono','SFMono-Regular',Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--body);font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 22px}
+  a{color:var(--copper)}
+  h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.05;margin:0}
+  .eyebrow{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--copper);margin:0 0 .7em
+  }
+
+  /* HERO */
+  .hero{
+    position:relative;overflow:hidden;color:var(--paper);
+    background:linear-gradient(160deg,#0a212c 0%,var(--teal) 70%,var(--teal-2) 100%);
+    padding:78px 0 0;
+  }
+  .hero .eyebrow{color:var(--copper-lt)}
+  .hero h1{
+    font-size:clamp(2.7rem,9vw,5rem);font-weight:800;letter-spacing:-.02em;
+    margin:0 0 .25em;
+  }
+  .hero .lede{font-size:1.18rem;max-width:30ch;color:#d7e4e6;margin:0 0 30px}
+  .hero-inner{animation:rise .8s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .wave{display:block;width:100%;height:54px;margin-top:34px}
+
+  /* note card */
+  .note{
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);
+    border-radius:14px;padding:22px 24px;margin:6px 0 4px;backdrop-filter:blur(2px);
+  }
+  .note p{margin:0;color:#e7eef0;font-size:1.02rem}
+  .note .sig{font-family:var(--mono);font-size:.78rem;letter-spacing:.04em;color:var(--copper-lt);margin-top:12px}
+
+  /* sections */
+  section{padding:64px 0}
+  .section-head{margin-bottom:30px}
+  .section-head h2{font-size:clamp(1.7rem,5vw,2.4rem)}
+  .section-head p{color:var(--muted);margin:.5em 0 0;max-width:52ch}
+
+  /* hotel */
+  .hotel{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:30px 30px 26px;
+  }
+  .hotel h3{font-size:1.5rem;margin-bottom:.15em}
+  .hotel .sub{color:var(--muted);font-family:var(--mono);font-size:.8rem;letter-spacing:.04em;margin-bottom:18px}
+  .feat{list-style:none;padding:0;margin:0 0 20px;display:grid;grid-template-columns:1fr 1fr;gap:8px 26px}
+  .feat li{position:relative;padding-left:20px;font-size:.98rem}
+  .feat li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border-radius:50%;background:var(--copper)}
+  .hotel .price{font-family:var(--display);font-weight:800;font-size:1.7rem}
+  .hotel .price span{font-family:var(--body);font-weight:500;font-size:.85rem;color:var(--muted)}
+  .pill{display:inline-block;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+    background:#fcefe7;color:var(--copper);border:1px solid #f0d5c5;border-radius:999px;padding:5px 11px;margin-top:16px}
+
+  /* days / timeline */
+  .day{margin-bottom:46px}
+  .day:last-child{margin-bottom:0}
+  .day-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:6px}
+  .day-head .n{font-family:var(--mono);font-size:.8rem;color:var(--copper);letter-spacing:.08em}
+  .day-head h3{font-size:1.45rem}
+  .timeline{list-style:none;margin:0;padding:0}
+  .stop{display:grid;grid-template-columns:74px 1fr;gap:18px;padding:15px 0;border-bottom:1px solid var(--line)}
+  .stop:last-child{border-bottom:none}
+  .time{font-family:var(--mono);font-size:.9rem;color:var(--copper);padding-top:1px}
+  .stop-body strong{display:block;font-weight:600}
+  .stop-body small{color:var(--muted);font-size:.92rem}
+  .aside{background:#e6ecec;border-left:3px solid var(--teal-2);border-radius:0 10px 10px 0;
+    padding:13px 17px;margin-top:14px;font-size:.95rem;color:#33474c}
+
+  /* map */
+  #map{height:460px;width:100%;border-radius:16px;border:1px solid var(--line);z-index:0}
+  .legend{display:flex;flex-wrap:wrap;gap:18px;margin:16px 0 22px;font-size:.85rem;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .place-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:14px 26px}
+  .place-list li{font-size:.95rem;border-top:1px solid var(--line);padding-top:11px}
+  .place-list b{display:block}
+  .place-list small{color:var(--muted)}
+
+  /* budget */
+  .budget{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  table{width:100%;border-collapse:collapse}
+  td{padding:11px 22px;border-bottom:1px solid var(--line);font-size:.97rem}
+  td:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  .subtotal td{background:#f6f8f8;font-weight:600}
+  .total td{background:var(--ink);color:var(--paper);font-family:var(--display);font-weight:800;font-size:1.15rem}
+  .budget-note{color:var(--muted);font-size:.9rem;margin:16px 2px 0}
+  .budget-note .star{color:var(--copper)}
+
+  /* highlights */
+  .hl{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .hl div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .hl b{display:block;margin-bottom:5px}
+  .hl small{color:var(--muted);font-size:.94rem;line-height:1.55}
+
+  /* practical */
+  .todo{list-style:none;padding:0;margin:0}
+  .todo li{padding:13px 0;border-bottom:1px solid var(--line);padding-left:30px;position:relative}
+  .todo li:last-child{border-bottom:none}
+  .todo li::before{content:"";position:absolute;left:0;top:15px;width:15px;height:15px;border:2px solid var(--copper);border-radius:4px}
+
+  footer{background:var(--ink);color:#aebcc0;padding:42px 0;font-size:.9rem}
+  footer b{color:var(--paper)}
+  footer .mono{font-family:var(--mono);font-size:.74rem;letter-spacing:.05em;margin-top:10px;color:#7d9197}
+
+  @media (max-width:620px){
+    body{font-size:16px}
+    .feat,.hl,.place-list{grid-template-columns:1fr}
+    .stop{grid-template-columns:62px 1fr;gap:12px}
+    #map{height:380px}
+    section{padding:48px 0}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .hero-inner{animation:none}
+    html{scroll-behavior:auto}
+  }
+  :focus-visible{outline:3px solid var(--copper-lt);outline-offset:2px;border-radius:4px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap hero-inner">
+    <p class="eyebrow">Vr 3 &mdash; Zo 5 juli 2026</p>
+    <h1>Een weekendje<br>Rotterdam</h1>
+    <p class="lede">Water, kunst, lekker eten en tijd voor onszelf.</p>
+    <div class="note">
+      <p>Eén ding vooraf, eerlijk is eerlijk: het idee voor dit weekend en alles wat ik je hier voorstel komt van mij. Het uitzoekwerk, de begroting en deze pagina heb ik laten uitwerken door Claude (een AI), zodat ik je in één keer een compleet plan kon laten zien in plaats van een rommelig berichtje. En het belangrijkste: niets ligt vast. Dit is een vóórstel &mdash; we schuiven net zo lang tot het voor ons allebei klopt.</p>
+      <div class="sig">— met liefde samengesteld, jij mag overal aan sleutelen</div>
+    </div>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 54" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,32 C240,4 480,4 720,24 C960,44 1200,44 1440,18 L1440,54 L0,54 Z" fill="#eef1f0"/>
+  </svg>
+</header>
+
+<main class="wrap">
+
+  <section id="hotel">
+    <div class="section-head">
+      <p class="eyebrow">Waar we slapen</p>
+      <h2>Haven Hotel Rotterdam</h2>
+    </div>
+    <div class="hotel">
+      <h3>Curio Collection by Hilton</h3>
+      <div class="sub">Leuvehaven 77 · aan het water · 2 nachten</div>
+      <ul class="feat">
+        <li>Uitzicht op de stad en de haven</li>
+        <li>Eigen bad op de kamer</li>
+        <li>Koffiezetapparaat op de kamer</li>
+        <li>Wellness &amp; gym in het hotel</li>
+      </ul>
+      <div class="price">€315,03 <span>/ 2 nachten samen</span></div>
+      <span class="pill">Spa &amp; bad — dat is precies het soort relax-moment dat ik voor ons voor me zie</span>
+      <p style="margin:18px 0 0;font-size:.95rem;color:var(--muted)">
+        Ik check nog even of de spa is inbegrepen en of we hem kunnen reserveren op een moment dat ons uitkomt.
+        <a href="https://www.booking.com/hotel/nl/mainport-hotel.nl.html?checkin=2026-07-03&checkout=2026-07-05&group_adults=2&no_rooms=1" target="_blank" rel="noopener">Bekijk het hotel &rarr;</a>
+      </p>
+    </div>
+  </section>
+
+  <section id="dagen">
+    <div class="section-head">
+      <p class="eyebrow">Het ritme van het weekend</p>
+      <h2>Onze dagen</h2>
+      <p>Tijden zijn een richtlijn, geen dienstregeling. Als we ergens langer willen blijven hangen, dan doen we dat gewoon.</p>
+    </div>
+
+    <div class="day">
+      <div class="day-head"><span class="n">Dag 1</span><h3>Vrijdag — aankomen en landen</h3></div>
+      <ul class="timeline">
+        <li class="stop"><div class="time">10.30</div><div class="stop-body"><strong>Met de trein naar Rotterdam</strong></div></li>
+        <li class="stop"><div class="time">11.20</div><div class="stop-body"><strong>Bagage in een kluis op het station</strong><small>Handen vrij voor de rest van de middag.</small></div></li>
+        <li class="stop"><div class="time">middag</div><div class="stop-body"><strong>Lunchen, shoppen en wat architectuur</strong></div></li>
+        <li class="stop"><div class="time">17.00</div><div class="stop-body"><strong>Inchecken, landen, leuk aankleden</strong></div></li>
+        <li class="stop"><div class="time">19.00</div><div class="stop-body"><strong>Watertaxi naar Hotel New York</strong><small>Halte Leuvehaven, vlak bij ons hotel. Vaart elk kwartier, €3 p.p.</small></div></li>
+        <li class="stop"><div class="time">19.30</div><div class="stop-body"><strong>Diner bij Hotel New York</strong><small>Iconisch, aan het water op de Kop van Zuid.</small></div></li>
+        <li class="stop"><div class="time">na het diner</div><div class="stop-body"><strong>Watertaxi terug langs de Erasmusbrug</strong><small>Op de terugweg varen we langs De Zwaan — 's avonds prachtig verlicht.</small></div></li>
+      </ul>
+      <div class="aside">Liever rustig beginnen? Dan komen we gewoon later aan, checken vroeg in en houden de avond luizig. Helemaal aan ons.</div>
+    </div>
+
+    <div class="day">
+      <div class="day-head"><span class="n">Dag 2</span><h3>Zaterdag — kunst, water en ontspanning</h3></div>
+      <ul class="timeline">
+        <li class="stop"><div class="time">09.30</div><div class="stop-body"><strong>Ontbijten op een terras</strong></div></li>
+        <li class="stop"><div class="time">11.00</div><div class="stop-body"><strong>Depot Boijmans Van Beuningen</strong><small>Tijdslot boeken we vooraf. Dakterras met uitzicht over de stad.</small></div></li>
+        <li class="stop"><div class="time">13.00</div><div class="stop-body"><strong>Lunch in de Markthal</strong></div></li>
+        <li class="stop"><div class="time">14.30</div><div class="stop-body"><strong>Kijk-Kubus</strong><small>Vlak naast de Markthal, dus geen extra reistijd.</small></div></li>
+        <li class="stop"><div class="time">15.45</div><div class="stop-body"><strong>Kunsthal Rotterdam</strong><small>In het Museumpark, ontworpen door Rem Koolhaas. Elke keer andere tentoonstellingen.</small></div></li>
+        <li class="stop"><div class="time">17.30</div><div class="stop-body"><strong>Kattencafé</strong></div></li>
+        <li class="stop"><div class="time">19.00</div><div class="stop-body"><strong>Terug naar het hotel: relaxen, spa, in bad</strong></div></li>
+        <li class="stop"><div class="time">21.00</div><div class="stop-body"><strong>Uit eten of roomservice</strong></div></li>
+      </ul>
+      <div class="aside">Dit is de volste dag. We houden minstens één onderdeel optioneel — het laatste museum of het kattencafé laten we vallen als we liever even niets doen.</div>
+    </div>
+
+    <div class="day">
+      <div class="day-head"><span class="n">Dag 3</span><h3>Zondag — rustig afsluiten</h3></div>
+      <ul class="timeline">
+        <li class="stop"><div class="time">10.00</div><div class="stop-body"><strong>Ontbijten in het hotel</strong></div></li>
+        <li class="stop"><div class="time">11.30</div><div class="stop-body"><strong>Uitchecken</strong></div></li>
+        <li class="stop"><div class="time">12.30</div><div class="stop-body"><strong>Wereldmuseum Rotterdam</strong></div></li>
+        <li class="stop"><div class="time">14.30</div><div class="stop-body"><strong>Naar huis, onderweg lunchen</strong></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="kaart">
+    <div class="section-head">
+      <p class="eyebrow">Alles op een kaartje</p>
+      <h2>Hoe dichtbij alles ligt</h2>
+      <p>Bijna alles ligt rond het centrum en aan het water, op loopafstand of een korte watertaxi. Op vrijdagavond varen we met de watertaxi heen en terug langs de Erasmusbrug naar Hotel New York.</p>
+    </div>
+    <div class="legend">
+      <span><i class="dot" style="background:#14586b"></i> Kunst &amp; zien</span>
+      <span><i class="dot" style="background:#c25f34"></i> Slapen, eten &amp; gezellig</span>
+      <span><i class="dot" style="background:#7d9197"></i> Vervoer</span>
+    </div>
+    <div id="map"></div>
+    <ul class="place-list" id="placeList"></ul>
+  </section>
+
+  <section id="begroting">
+    <div class="section-head">
+      <p class="eyebrow">Wat het ongeveer kost</p>
+      <h2>De begroting</h2>
+      <p>Alle bedragen zijn het totaal voor ons samen. Eén van ons heeft een Museumkaart, dus alleen de ander betaalt entree.</p>
+    </div>
+    <div class="budget">
+      <table>
+        <tr><td>Hotel (2 nachten)</td><td>€315,03</td></tr>
+        <tr><td>Trein heen</td><td>€20,00</td></tr>
+        <tr><td>Bagagekluis station</td><td>€10,00</td></tr>
+        <tr><td>Lunch / shoppen / architectuur — dag 1</td><td>€60,00</td></tr>
+        <tr><td>Diner Hotel New York</td><td>€180,00</td></tr>
+        <tr><td>Ontbijt terras — dag 2</td><td>€40,00</td></tr>
+        <tr><td>Lunch Markthal</td><td>€60,00</td></tr>
+        <tr><td>Kijk-Kubus</td><td>€7,00</td></tr>
+        <tr><td>Watertaxi (dag 1 heen &amp; terug + dag 2)</td><td>€10,50</td></tr>
+        <tr><td>Kattencafé</td><td>€20,00</td></tr>
+        <tr><td>Diner / roomservice — dag 2</td><td>€120,00</td></tr>
+        <tr><td>Ontbijt hotel — dag 3</td><td>€40,00</td></tr>
+        <tr><td>Thuisreis + lunch — dag 3</td><td>€40,00</td></tr>
+        <tr class="subtotal"><td>Subtotaal (zonder entree)</td><td>€922,53</td></tr>
+        <tr><td>Entree musea — één van ons betaalt</td><td>+ €53–55</td></tr>
+        <tr class="total"><td>Totaal</td><td>± €977</td></tr>
+      </table>
+    </div>
+    <p class="budget-note">Dat is ongeveer <b>€488 per persoon</b>. Entree per persoon: Depot €20, Kunsthal €19, Wereldmuseum €16 — allemaal gratis met de Museumkaart of Vriendenloterij VIP-kaart.</p>
+
+  </section>
+
+  <section id="waarom">
+    <div class="section-head">
+      <p class="eyebrow">Waarom ik dit voor ons in gedachten heb</p>
+      <h2>Wat het zo leuk maakt</h2>
+    </div>
+    <div class="hl">
+      <div><b>Aan het water</b><small>Uitzicht over de haven en de Maas, de hele tijd dichtbij het water.</small></div>
+      <div><b>Spa &amp; eigen bad</b><small>Tijd om écht tot rust te komen, zonder ergens heen te moeten.</small></div>
+      <div><b>Een romantisch diner</b><small>Bij het iconische Hotel New York, op de eerste avond.</small></div>
+      <div><b>Kunst &amp; architectuur</b><small>Genoeg moois om te zien, maar steeds met ruimte om af te wijken.</small></div>
+    </div>
+  </section>
+
+  <section id="regelen">
+    <div class="section-head">
+      <p class="eyebrow">Voor de zekerheid</p>
+      <h2>Wat we nog moeten regelen</h2>
+    </div>
+    <ul class="todo">
+      <li>Tafel reserveren bij Hotel New York</li>
+      <li>Tijdslot boeken voor het Depot Boijmans</li>
+      <li>Plekje reserveren bij het kattencafé</li>
+      <li>Spa &amp; wellness bevestigen bij het hotel</li>
+      <li>NS-tarief checken</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <b>Een voorstel van mij, voor ons.</b><br>
+    Bedacht door mij, uitgewerkt met hulp van Claude (AI). Alles is bespreekbaar — zeg maar wat je wilt veranderen.
+    <div class="mono">Weekendje Rotterdam · 3–5 juli 2026</div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+  var places = [
+    {name:"Haven Hotel Rotterdam", note:"Ons hotel. Aan de Leuvehaven, met spa en bad op de kamer.", lat:51.9132581, lng:4.4823504, type:"verblijf"},
+    {name:"Rotterdam Centraal", note:"Aankomst dag 1. Bagagekluizen in het station.", lat:51.9243233, lng:4.4699155, type:"vervoer"},
+    {name:"Hotel New York", note:"Romantisch diner, vrijdagavond op de Kop van Zuid.", lat:51.9040633, lng:4.484237, type:"verblijf"},
+    {name:"Depot Boijmans Van Beuningen", note:"Zaterdagochtend. Tijdslot vooraf boeken.", lat:51.9138144, lng:4.4710603, type:"kunst"},
+    {name:"Markthal", note:"Lunch op zaterdag.", lat:51.9199799, lng:4.4869831, type:"verblijf"},
+    {name:"Kijk-Kubus", note:"Vlak naast de Markthal — de scheve kubuswoningen.", lat:51.9201875, lng:4.4905747, type:"kunst"},
+    {name:"Pebbles Kattencafé", note:"Koffie tussen de katten, aan de Hoogstraat.", lat:51.9229726, lng:4.4943897, type:"verblijf"},
+    {name:"Kunsthal Rotterdam", note:"In het Museumpark, ontworpen door Rem Koolhaas. Elke keer andere tentoonstellingen.", lat:51.910818, lng:4.4736923, type:"kunst"},
+    {name:"Wereldmuseum Rotterdam", note:"Zondag, aan de Willemskade vlak bij het hotel.", lat:51.9079096, lng:4.4803975, type:"kunst"}
+  ];
+  var colors = {kunst:"#14586b", verblijf:"#c25f34", vervoer:"#7d9197"};
+
+  var map = L.map('map', {scrollWheelZoom:false}).setView([51.9135, 4.483], 14);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution:'&copy; OpenStreetMap &copy; CARTO', maxZoom:19
+  }).addTo(map);
+
+  var group = [];
+  places.forEach(function(p){
+    var m = L.circleMarker([p.lat, p.lng], {
+      radius:9, color:"#fff", weight:2, fillColor:colors[p.type], fillOpacity:1
+    }).addTo(map);
+    m.bindPopup("<strong>"+p.name+"</strong><br>"+p.note);
+    group.push([p.lat, p.lng]);
+  });
+  map.fitBounds(group, {padding:[40,40]});
+
+  var list = document.getElementById('placeList');
+  places.forEach(function(p){
+    var li = document.createElement('li');
+    li.innerHTML = "<b>"+p.name+"</b><small>"+p.note+"</small>";
+    list.appendChild(li);
+  });
+</script>
+</body>
+</html>
