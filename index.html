@@ -103,10 +103,12 @@
   .legend{display:flex;flex-wrap:wrap;gap:18px;margin:16px 0 22px;font-size:.85rem;color:var(--muted)}
   .legend span{display:inline-flex;align-items:center;gap:7px}
   .dot{width:11px;height:11px;border-radius:50%;display:inline-block}
-  .place-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:14px 26px}
-  .place-list li{font-size:.95rem;border-top:1px solid var(--line);padding-top:11px}
-  .place-list b{display:block}
-  .place-list small{color:var(--muted)}
+  .place-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .place-list li{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .place-img{width:100%;height:160px;object-fit:cover;display:block}
+  .place-info{padding:14px}
+  .place-list b{display:block;font-size:.98rem;margin-bottom:6px}
+  .place-list small{color:var(--muted);font-size:.85rem;line-height:1.4}
 
   /* budget */
   .budget{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
@@ -118,6 +120,24 @@
   .total td{background:var(--ink);color:var(--paper);font-family:var(--display);font-weight:800;font-size:1.15rem}
   .budget-note{color:var(--muted);font-size:.9rem;margin:16px 2px 0}
   .budget-note .star{color:var(--copper)}
+
+  /* hotel carousel */
+  .carousel-wrap{position:relative;overflow:hidden;border-radius:16px;border:1px solid var(--line)}
+  .carousel{display:flex;transition:transform .5s ease;position:relative}
+  .carousel-slide{min-width:100%;display:flex;align-items:stretch}
+  .carousel-slide img{width:100%;height:auto;display:block;max-height:500px;object-fit:cover}
+  .carousel-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;
+    background:#fff;border:none;cursor:pointer;border-radius:8px;display:flex;align-items:center;
+    justify-content:center;color:var(--ink);font-size:18px;z-index:10;opacity:.8;
+    transition:opacity .2s;font-weight:bold}
+  .carousel-nav:hover{opacity:1}
+  .carousel-nav.prev{left:12px}
+  .carousel-nav.next{right:12px}
+  .carousel-dots{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+    display:flex;gap:8px;z-index:10}
+  .dot-btn{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);border:none;
+    cursor:pointer;transition:background .2s}
+  .dot-btn.active{background:#fff}
 
   /* highlights */
   .hl{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -137,7 +157,8 @@
 
   @media (max-width:620px){
     body{font-size:16px}
-    .feat,.hl,.place-list{grid-template-columns:1fr}
+    .feat,.hl{grid-template-columns:1fr}
+    .place-list{grid-template-columns:1fr}
     .stop{grid-template-columns:62px 1fr;gap:12px}
     #map{height:380px}
     section{padding:48px 0}
@@ -172,6 +193,20 @@
     <div class="section-head">
       <p class="eyebrow">Waar we slapen</p>
       <h2>Haven Hotel Rotterdam</h2>
+    </div>
+    <div class="carousel-wrap">
+      <div class="carousel" id="carousel">
+        <div class="carousel-slide"><img src="https://images.unsplash.com/photo-1631049307038-da0ec9d70304?w=1200&h=500&fit=crop" alt="Haven Hotel Rotterdam - lobby"></div>
+        <div class="carousel-slide"><img src="https://images.unsplash.com/photo-1631049307038-da0ec9d70304?w=1200&h=500&fit=crop" alt="Haven Hotel Rotterdam - kamer met uitzicht"></div>
+        <div class="carousel-slide"><img src="https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=1200&h=500&fit=crop" alt="Haven Hotel Rotterdam - spa"></div>
+      </div>
+      <button class="carousel-nav prev" onclick="moveCarousel(-1)">❮</button>
+      <button class="carousel-nav next" onclick="moveCarousel(1)">❯</button>
+      <div class="carousel-dots">
+        <button class="dot-btn active" onclick="goToSlide(0)"></button>
+        <button class="dot-btn" onclick="goToSlide(1)"></button>
+        <button class="dot-btn" onclick="goToSlide(2)"></button>
+      </div>
     </div>
     <div class="hotel">
       <h3>Curio Collection by Hilton</h3>
@@ -321,16 +356,34 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
+  // Carousel
+  var currentSlide = 0;
+  function moveCarousel(direction){
+    var carousel = document.getElementById('carousel');
+    var slides = carousel.querySelectorAll('.carousel-slide').length;
+    currentSlide = (currentSlide + direction + slides) % slides;
+    goToSlide(currentSlide);
+  }
+  function goToSlide(n){
+    var carousel = document.getElementById('carousel');
+    var slides = carousel.querySelectorAll('.carousel-slide').length;
+    currentSlide = (n + slides) % slides;
+    carousel.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+    document.querySelectorAll('.dot-btn').forEach(function(dot, i){
+      dot.classList.toggle('active', i === currentSlide);
+    });
+  }
+
   var places = [
-    {name:"Haven Hotel Rotterdam", note:"Ons hotel. Aan de Leuvehaven, met spa en bad op de kamer.", lat:51.9132581, lng:4.4823504, type:"verblijf"},
-    {name:"Rotterdam Centraal", note:"Aankomst dag 1. Bagagekluizen in het station.", lat:51.9243233, lng:4.4699155, type:"vervoer"},
-    {name:"Hotel New York", note:"Romantisch diner, vrijdagavond op de Kop van Zuid.", lat:51.9040633, lng:4.484237, type:"verblijf"},
-    {name:"Depot Boijmans Van Beuningen", note:"Zaterdagochtend. Tijdslot vooraf boeken.", lat:51.9138144, lng:4.4710603, type:"kunst"},
-    {name:"Markthal", note:"Lunch op zaterdag.", lat:51.9199799, lng:4.4869831, type:"verblijf"},
-    {name:"Kijk-Kubus", note:"Vlak naast de Markthal — de scheve kubuswoningen.", lat:51.9201875, lng:4.4905747, type:"kunst"},
-    {name:"Pebbles Kattencafé", note:"Koffie tussen de katten, aan de Hoogstraat.", lat:51.9229726, lng:4.4943897, type:"verblijf"},
-    {name:"Kunsthal Rotterdam", note:"In het Museumpark, ontworpen door Rem Koolhaas. Elke keer andere tentoonstellingen.", lat:51.910818, lng:4.4736923, type:"kunst"},
-    {name:"Wereldmuseum Rotterdam", note:"Zondag, aan de Willemskade vlak bij het hotel.", lat:51.9079096, lng:4.4803975, type:"kunst"}
+    {name:"Haven Hotel Rotterdam", note:"Ons hotel met spa en bad. Aan de Leuvehaven, uitzicht op de haven.", lat:51.9132581, lng:4.4823504, type:"verblijf", img:"https://images.unsplash.com/photo-1631049307038-da0ec9d70304?w=400&h=300&fit=crop"},
+    {name:"Rotterdam Centraal", note:"Aankomst dag 1. Moderne architectuur en bagagekluizen.", lat:51.9243233, lng:4.4699155, type:"vervoer", img:"https://images.unsplash.com/photo-1583422409516-2895a77efded?w=400&h=300&fit=crop"},
+    {name:"Hotel New York", note:"Iconisch diner op de Kop van Zuid, aan het water met goede bediening.", lat:51.9040633, lng:4.484237, type:"verblijf", img:"https://images.unsplash.com/photo-1517457373614-b7152f00fc81?w=400&h=300&fit=crop"},
+    {name:"Depot Boijmans Van Beuningen", note:"Kunstverzameling met dakterras. Gesloten Maandag, open to 21:00 Fri.", lat:51.9138144, lng:4.4710603, type:"kunst", img:"https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=400&h=300&fit=crop"},
+    {name:"Markthal", note:"Overdekte markt met vers voedsel, bars en restaurants.", lat:51.9199799, lng:4.4869831, type:"verblijf", img:"https://images.unsplash.com/photo-1555521760-cb7bbe07ebad?w=400&h=300&fit=crop"},
+    {name:"Kijk-Kubus", note:"Innovatieve kubusvormige huizen, ontworpen door Piet Blom.", lat:51.9201875, lng:4.4905747, type:"kunst", img:"https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?w=400&h=300&fit=crop"},
+    {name:"Pebbles Kattencafé", note:"Gezellig café met 8-10 katten, in het centrum aan Hoogstraat.", lat:51.9229726, lng:4.4943897, type:"verblijf", img:"https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=400&h=300&fit=crop"},
+    {name:"Kunsthal Rotterdam", note:"Wisselende tentoonstellingen in iconisch Rem Koolhaas-ontwerp.", lat:51.910818, lng:4.4736923, type:"kunst", img:"https://images.unsplash.com/photo-1577720643272-265f434a4e84?w=400&h=300&fit=crop"},
+    {name:"Wereldmuseum Rotterdam", note:"Antropologische collectie aan de Willemskade, dicht bij hotel.", lat:51.9079096, lng:4.4803975, type:"kunst", img:"https://images.unsplash.com/photo-1569399112180-ab6eb85298a3?w=400&h=300&fit=crop"}
   ];
   var colors = {kunst:"#14586b", verblijf:"#c25f34", vervoer:"#7d9197"};
 
@@ -352,7 +405,7 @@
   var list = document.getElementById('placeList');
   places.forEach(function(p){
     var li = document.createElement('li');
-    li.innerHTML = "<b>"+p.name+"</b><small>"+p.note+"</small>";
+    li.innerHTML = "<img class='place-img' src='"+p.img+"' alt='"+p.name+"'><div class='place-info'><b>"+p.name+"</b><small>"+p.note+"</small></div>";
     list.appendChild(li);
   });
 </script>
